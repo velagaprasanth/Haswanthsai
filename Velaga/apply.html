@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Excellence Academy</title>
+    <style>
+        /* General Reset */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background: #ffffff;
+            width: 400px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .login-container h1 {
+            font-size: 24px;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .login-container p {
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .login-container label {
+            display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .login-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .login-container a {
+            color: #007bff;
+            text-decoration: none;
+            display: block;
+            margin-top: 15px;
+        }
+
+        .login-container a:hover {
+            text-decoration: underline;
+        }
+
+        .submitted-message {
+            display: none;
+            color: green;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js"></script>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Excellence Academy</h1>
+        <p>Welcome back! Please log in to your account.</p>
+        <form id="login-form">
+            <label for="student-name">Name of Student</label>
+            <input type="text" id="student-name" placeholder="Enter your full name" required>
+
+            <label for="father-name">Name of Father</label>
+            <input type="text" id="father-name" placeholder="Enter father's full name" required>
+
+            <label for="location">Location</label>
+            <input type="text" id="location" placeholder="Enter your location" required>
+
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="Enter your phone number" maxlength="10" pattern="\d{10}" required>
+
+            <button type="button" id="submit-btn">Submit</button>
+        </form>
+        <p class="submitted-message" id="submitted-message">Form Submitted Successfully!</p>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDUkeKQtkRs00-QoyVfZXGpU6iJFWSvT54",
+            authDomain: "velagaprasanthlathasri.firebaseapp.com",
+            databaseURL: "https://velagaprasanthlathasri-default-rtdb.firebaseio.com",
+            projectId: "velagaprasanthlathasri",
+            storageBucket: "velagaprasanthlathasri.appspot.com",
+            messagingSenderId: "776951360452",
+            appId: "1:776951360452:web:37691241a0e7e892f11291",
+            measurementId: "G-M9HNW2T17Z"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Handle form submission
+        const form = document.getElementById('login-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const submittedMessage = document.getElementById('submitted-message');
+
+        submitBtn.addEventListener('click', () => {
+            const studentName = document.getElementById('student-name').value;
+            const fatherName = document.getElementById('father-name').value;
+            const location = document.getElementById('location').value;
+            const phone = document.getElementById('phone').value;
+
+            if (!studentName || !fatherName || !location || !phone) {
+                alert("Please fill all fields.");
+                return;
+            }
+
+            const dbRef = database.ref('submissions');
+            dbRef.push({
+                studentName,
+                fatherName,
+                location,
+                phone
+            })
+            .then(() => {
+                submittedMessage.style.display = 'block';
+                form.reset();
+            })
+            .catch(error => {
+                console.error("Error submitting form:", error);
+                alert("Failed to submit form. Try again.");
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submitted Data</title>
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Submitted User Data</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Father Name</th>
+                <th>Location</th>
+                <th>Phone</th>
+            </tr>
+        </thead>
+        <tbody id="data-table">
+            <!-- Data will be injected here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Firebase configuration (use the same config as in apply.html)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Fetch data from Firebase
+        const dbRef = firebase.database().ref('submissions');
+
+        dbRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            const tableBody = document.getElementById('data-table');
+            tableBody.innerHTML = ""; // Clear existing rows
+
+            for (let id in data) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data[id].studentName}</td>
+                    <td>${data[id].fatherName}</td>
+                    <td>${data[id].location}</td>
+                    <td>${data[id].phone}</td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }, (error) => {
+            console.error("Error fetching data:", error);
+        });
+    </script>
+</body>
+</html>
